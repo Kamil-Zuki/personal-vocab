@@ -13,9 +13,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\karat\\Desktop\\LangProgects\\sm-repetition-algorithm\\sm-repetition-algorithm.BLL\\sm-repetition-algorithm.BLL.csproj",
-      "projectName": "sm-repetition-algorithm.BLL",
-      "projectPath": "C:\\Users\\karat\\Desktop\\LangProgects\\sm-repetition-algorithm\\sm-repetition-algorithm.BLL\\sm-repetition-algorithm.BLL.csproj",
+      "projectUniqueName": "C:\\Users\\karat\\Desktop\\LangProgects\\sm-repetition-algorithm\\sm-repetition-algorithm.BLL\\Sm-repetition-algorithm.BLL.csproj",
+      "projectName": "Sm-repetition-algorithm.BLL",
+      "projectPath": "C:\\Users\\karat\\Desktop\\LangProgects\\sm-repetition-algorithm\\sm-repetition-algorithm.BLL\\Sm-repetition-algorithm.BLL.csproj",
       "packagesPath": "C:\\Users\\karat\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\karat\\Desktop\\LangProgects\\sm-repetition-algorithm\\sm-repetition-algorithm.BLL\\obj\\",
       "projectStyle": "PackageReference",

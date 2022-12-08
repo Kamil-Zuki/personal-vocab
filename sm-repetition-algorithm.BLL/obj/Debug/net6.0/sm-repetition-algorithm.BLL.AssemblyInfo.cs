@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("sm-repetition-algorithm.BLL")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("Sm-repetition-algorithm.BLL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("sm-repetition-algorithm.BLL")]
-[assembly: System.Reflection.AssemblyTitleAttribute("sm-repetition-algorithm.BLL")]
+[assembly: System.Reflection.AssemblyProductAttribute("Sm-repetition-algorithm.BLL")]
+[assembly: System.Reflection.AssemblyTitleAttribute("Sm-repetition-algorithm.BLL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Создано классом WriteCodeFragment MSBuild.

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sm-repetition-algorithm.API", "sm-repetition-algorithm.API.csproj", "{7F5E2A26-A304-41C8-B2A6-B305542E84AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sm-repetition-algorithm.API", "Sm-repetition-algorithm.API.csproj", "{7F5E2A26-A304-41C8-B2A6-B305542E84AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sm-repetition-algorithm.BLL", "..\sm-repetition-algorithm.BLL\sm-repetition-algorithm.BLL.csproj", "{408A8EE5-2AB6-4EB7-A43D-51A7B71F1EC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sm-repetition-algorithm.BLL", "..\sm-repetition-algorithm.BLL\Sm-repetition-algorithm.BLL.csproj", "{408A8EE5-2AB6-4EB7-A43D-51A7B71F1EC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

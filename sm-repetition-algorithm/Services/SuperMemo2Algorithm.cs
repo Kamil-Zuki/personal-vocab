@@ -1,10 +1,5 @@
-﻿using sm_repetition_algorithm.BLL.DTOs;
-using sm_repetition_algorithm.BLL.Interfeces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using sm_repetition_algorithm.BLL.Interfeces;
+using sm_repetition_algorithm.BLL.Models;
 
 namespace sm_repetition_algorithm.BLL.Logic
 {
@@ -12,15 +7,15 @@ namespace sm_repetition_algorithm.BLL.Logic
     {
         public void CalculateSuperMemo2Algorithm(FlashCard card, int quality)
         {
-            if(quality == 0 || quality > 5)
+            if (quality == 0 || quality > 5)
             {
                 throw new Exception("The quality isn't within 0-5");
             }
 
             //retrieve the stored values (default values if new cards)
-            int repetitions = card.GetRepetitions();
-            float easiness = card.GetEasinessFactor();
-            int interval = card.GetInterval();
+            int repetitions = card.Repetitions;
+            float easiness = card.EasinessFactor;
+            int interval = card.Interval;
 
             // easiness factor
             easiness = (float)Math.Max(1.3, easiness + 0.1 - (5.0 - quality) * (0.08 + (5.0 - quality) * 0.02));

@@ -1,5 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using sm_repetition_algorithm.BLL.Interfeces;
 using sm_repetition_algorithm.BLL.Logic;
+using sm_repetition_algorithm.DAL.DataAccess;
 
 namespace sm_repetition_algorithm
 {
@@ -14,7 +17,10 @@ namespace sm_repetition_algorithm
 
             builder.Services.AddControllers();
             builder.Services.AddScoped<ISuperMemo2Algorithm, SuperMemo2Algorithm>();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddDbContext<RepetitionAlgorithmContext>(options =>
+            {
+                options.UseNpgsql(builder.Configuration.GetConnectionString("Default")!);
+            });
 
             builder.Services.AddCors(options =>
             {
@@ -29,14 +35,26 @@ namespace sm_repetition_algorithm
             });
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Repetition Algorithm API", Version = "v1" });
+
+            });
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
 
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwagger(c =>
+            {
+                c.RouteTemplate = "repetition/swagger/{documentname}/swagger.json";
+            });
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/repetition/swagger/v1/swagger.json", "Repetition Algorithm API");
+                c.RoutePrefix = "repetition/swagger";
+            });
 
             app.MapControllers();
 

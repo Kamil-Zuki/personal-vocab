@@ -1,4 +1,4 @@
-﻿using sm_repetition_algorithm.BLL.DTOs;
+﻿using sm_repetition_algorithm.BLL.Models;
 
 namespace sm_repetition_algorithm.BLL.Interfeces
 {

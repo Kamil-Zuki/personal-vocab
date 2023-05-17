@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using sm_repetition_algorithm.BLL.DTOs;
 using sm_repetition_algorithm.BLL.Interfeces;
+using sm_repetition_algorithm.BLL.Models;
 
 namespace sm_repetition_algorithm.Controllers
 {
     [ApiController]
-    [Route("/v1/repetition")]
+    [Route("repetition")]
     public class RepetitionController : ControllerBase
     {
-        ISuperMemo2Algorithm _superMemoAlgorithm;
+        private readonly ISuperMemo2Algorithm _superMemoAlgorithm;
 
         public RepetitionController(ISuperMemo2Algorithm superMemoAlgorithm)
         {
@@ -16,14 +16,14 @@ namespace sm_repetition_algorithm.Controllers
         }
 
         [HttpGet]
-        public IActionResult Repetition(FlashCard card, int quality)
+        public IActionResult Repetition([FromQuery] FlashCard card, int quality)
         {
             try
             {
                 _superMemoAlgorithm.CalculateSuperMemo2Algorithm(card, quality);
                 return Ok();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Problem(ex.StackTrace, ex.Message);
             }

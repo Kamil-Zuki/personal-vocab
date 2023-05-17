@@ -6,13 +6,13 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v6.0": {
-      "sm-repetition-algorithm.API/1.0.0": {
+      "Sm-repetition-algorithm.API/1.0.0": {
         "dependencies": {
-          "SpacedRepetition.Net": "1.0.4",
+          "Sm-repetition-algorithm.BLL": "1.0.0",
           "Swashbuckle.AspNetCore": "6.4.0"
         },
         "runtime": {
-          "sm-repetition-algorithm.API.dll": {}
+          "Sm-repetition-algorithm.API.dll": {}
         }
       },
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {},
@@ -21,14 +21,6 @@
           "lib/netstandard2.0/Microsoft.OpenApi.dll": {
             "assemblyVersion": "1.2.3.0",
             "fileVersion": "1.2.3.0"
-          }
-        }
-      },
-      "SpacedRepetition.Net/1.0.4": {
-        "runtime": {
-          "lib/netstandard2.0/SpacedRepetition.Net.dll": {
-            "assemblyVersion": "1.0.2.0",
-            "fileVersion": "1.0.2.0"
           }
         }
       },
@@ -69,11 +61,16 @@
             "fileVersion": "6.4.0.0"
           }
         }
+      },
+      "Sm-repetition-algorithm.BLL/1.0.0": {
+        "runtime": {
+          "Sm-repetition-algorithm.BLL.dll": {}
+        }
       }
     }
   },
   "libraries": {
-    "sm-repetition-algorithm.API/1.0.0": {
+    "Sm-repetition-algorithm.API/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -91,13 +88,6 @@
       "sha512": "sha512-Nug3rO+7Kl5/SBAadzSMAVgqDlfGjJZ0GenQrLywJ84XGKO0uRqkunz5Wyl0SDwcR71bAATXvSdbdzPrYRYKGw==",
       "path": "microsoft.openapi/1.2.3",
       "hashPath": "microsoft.openapi.1.2.3.nupkg.sha512"
-    },
-    "SpacedRepetition.Net/1.0.4": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-XCJLq1qJdUId1nzNLMmULd+gm7SBJIO/KW0I2WBfYQVo+jn8Z02eZc+cem4QLVB9w2ZfDm9Ol+3o+soiYLgbTA==",
-      "path": "spacedrepetition.net/1.0.4",
-      "hashPath": "spacedrepetition.net.1.0.4.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/6.4.0": {
       "type": "package",
@@ -126,6 +116,11 @@
       "sha512": "sha512-1Hh3atb3pi8c+v7n4/3N80Jj8RvLOXgWxzix6w3OZhB7zBGRwsy7FWr4e3hwgPweSBpwfElqj4V4nkjYabH9nQ==",
       "path": "swashbuckle.aspnetcore.swaggerui/6.4.0",
       "hashPath": "swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512"
+    },
+    "Sm-repetition-algorithm.BLL/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

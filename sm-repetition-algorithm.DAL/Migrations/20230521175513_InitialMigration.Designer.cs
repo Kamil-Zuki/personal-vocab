@@ -12,8 +12,8 @@ using sm_repetition_algorithm.DAL.DataAccess;
 namespace sm_repetition_algorithm.DAL.Migrations
 {
     [DbContext(typeof(RepetitionAlgorithmContext))]
-    [Migration("20230517133456_InitialDBCreation")]
-    partial class InitialDBCreation
+    [Migration("20230521175513_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,26 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using sm_repetition_algorithm.BLL.Interfeces;
 using sm_repetition_algorithm.BLL.Models;
 
 namespace sm_repetition_algorithm.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("repetition")]
     public class RepetitionController : ControllerBase
     {
         private readonly ISuperMemo2Algorithm _superMemoAlgorithm;
-
-        public RepetitionController(ISuperMemo2Algorithm superMemoAlgorithm)
+        //private readonly IHttpContextAccessor _httpContextAccessor;
+        public RepetitionController(ISuperMemo2Algorithm superMemoAlgorithm/*, IHttpContextAccessor httpContextAccessor*/)
         {
             _superMemoAlgorithm = superMemoAlgorithm;
+            //_httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpGet]
-        public IActionResult Repetition([FromQuery] FlashCard card, int quality)
+        [HttpPost("set")]
+        public async Task<ActionResult> Repetition([FromQuery] FlashCard card)
         {
             try
             {
-                _superMemoAlgorithm.CalculateSuperMemo2Algorithm(card, quality);
+                //var asd = _httpContextAccessor.HttpContext?.User;
+                await _superMemoAlgorithm.CalculateSuperMemo2Algorithm(card);
                 return Ok();
             }
             catch (Exception ex)

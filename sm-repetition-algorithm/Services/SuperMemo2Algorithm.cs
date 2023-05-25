@@ -5,9 +5,9 @@ namespace sm_repetition_algorithm.BLL.Logic
 {
     public class SuperMemo2Algorithm : ISuperMemo2Algorithm
     {
-        public void CalculateSuperMemo2Algorithm(FlashCard card, int quality)
+        public async Task CalculateSuperMemo2Algorithm(FlashCard card)
         {
-            if (quality == 0 || quality > 5)
+            if (card.Quality == 0 || card.Quality > 5)
             {
                 throw new Exception("The quality isn't within 0-5");
             }
@@ -18,10 +18,10 @@ namespace sm_repetition_algorithm.BLL.Logic
             int interval = card.Interval;
 
             // easiness factor
-            easiness = (float)Math.Max(1.3, easiness + 0.1 - (5.0 - quality) * (0.08 + (5.0 - quality) * 0.02));
+            easiness = (float)Math.Max(1.3, easiness + 0.1 - (5.0 - card.Quality) * (0.08 + (5.0 - card.Quality) * 0.02));
 
             // repetitions
-            if (quality < 3)
+            if (card.Quality < 3)
             {
                 repetitions = 0;
             }

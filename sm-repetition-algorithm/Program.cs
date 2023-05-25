@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using sm_repetition_algorithm.BLL.Interfeces;
 using sm_repetition_algorithm.BLL.Logic;
 using sm_repetition_algorithm.DAL.DataAccess;
+using System.Text;
 
 namespace sm_repetition_algorithm
 {
@@ -22,6 +25,7 @@ namespace sm_repetition_algorithm
                 options.UseNpgsql(builder.Configuration.GetConnectionString("Default")!);
             });
 
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -38,8 +42,50 @@ namespace sm_repetition_algorithm
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Repetition Algorithm API", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+             {
+                 {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                    new string[]{}
+                }
+                });
 
+                });
+
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                // Configure the JwtBearer authentication options
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = "https://localhost:5001",
+                    ValidAudience = "https://localhost:5001",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
+                };
             });
+
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -59,6 +105,12 @@ namespace sm_repetition_algorithm
             app.MapControllers();
 
             app.UseCors(MyAllowSpecificOrigins);
+
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+
 
             app.Run();
         }

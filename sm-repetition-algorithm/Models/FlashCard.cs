@@ -5,5 +5,6 @@
         public int Repetitions { get; set; }
         public float EasinessFactor { get; set; }
         public int Interval { get; set; }
+        public int Quality { get; set; }
     }
 }

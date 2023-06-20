@@ -1,16 +1,23 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using sm_repetition_algorithm.BLL.Interfeces;
 using sm_repetition_algorithm.BLL.Logic;
 using sm_repetition_algorithm.DAL.DataAccess;
 using System.Text;
-
+using Microsoft.Extensions.Configuration;
 namespace sm_repetition_algorithm
 {
     public class Program
     {
+        private IConfiguration Configuration { get; }
+
+        public Program(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
         public static void Main(string[] args)
         {
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -20,23 +27,31 @@ namespace sm_repetition_algorithm
 
             builder.Services.AddControllers();
             builder.Services.AddScoped<ISuperMemo2Algorithm, SuperMemo2Algorithm>();
-            builder.Services.AddDbContext<RepetitionAlgorithmContext>(options =>
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            //builder.Services.AddDbContext<RepetitionAlgorithmContext>(options =>
+            //{
+            //    options.UseNpgsql(builder.Configuration.GetConnectionString("Default")!);
+            //});
+            var configuration = builder.Configuration; // Get the configuration from the builder
+
+            //var connectionString = configuration.GetConnectionString("Db");
+            //builder.Services.AddDbContext<DataContext>(opt =>
+            //    opt.UseNpgsql(connectionString));
+
+            builder.Services.AddDbContext<DataContext>(options =>
             {
-                options.UseNpgsql(builder.Configuration.GetConnectionString("Default")!);
+                var connectionString = configuration.GetConnectionString("Db");
+                options.UseNpgsql(connectionString);
             });
 
-
-            builder.Services.AddCors(options =>
+            builder.Services.AddCors(c => c.AddPolicy("cors", opt =>
             {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
-                                  policy =>
-                                  {
-                                      policy
-                                      .AllowAnyOrigin()
-                                      .AllowAnyMethod()
-                                      .AllowAnyHeader();
-                                  });
-            });
+                opt.AllowAnyHeader();
+                //opt.AllowCredentials();
+                opt.AllowAnyMethod();
+                opt.AllowAnyOrigin();
+                //opt.WithOrigins(builder.Configuration.GetSection("Cors:Urls").Get<string[]>()!);
+            }));
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>

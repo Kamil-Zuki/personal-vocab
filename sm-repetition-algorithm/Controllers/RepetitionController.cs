@@ -10,21 +10,21 @@ namespace sm_repetition_algorithm.Controllers
     [Route("repetition")]
     public class RepetitionController : ControllerBase
     {
-        private readonly ISuperMemo2Algorithm _superMemoAlgorithm;
+        private readonly IFlashCardSevice _superMemoAlgorithm;
         //private readonly IHttpContextAccessor _httpContextAccessor;
-        public RepetitionController(ISuperMemo2Algorithm superMemoAlgorithm/*, IHttpContextAccessor httpContextAccessor*/)
+        public RepetitionController(IFlashCardSevice superMemoAlgorithm/*, IHttpContextAccessor httpContextAccessor*/)
         {
             _superMemoAlgorithm = superMemoAlgorithm;
             //_httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpPost("set")]
+        [HttpPost("v1/learn")]
         public async Task<ActionResult> Repetition([FromQuery] FlashCard card)
         {
             try
             {
                 //var asd = _httpContextAccessor.HttpContext?.User;
-                await _superMemoAlgorithm.CalculateSuperMemo2Algorithm(card);
+                await _superMemoAlgorithm.Learn(card);
                 return Ok();
             }
             catch (Exception ex)
@@ -32,5 +32,8 @@ namespace sm_repetition_algorithm.Controllers
                 return Problem(ex.StackTrace, ex.Message);
             }
         }
+
+
+
     }
 }

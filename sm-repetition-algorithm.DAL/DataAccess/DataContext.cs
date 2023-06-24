@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using sm_repetition_algorithm.DAL.Entitis;
-using Sm_repetition_algorithm.DAL.Entitis;
 
 namespace sm_repetition_algorithm.DAL.DataAccess
 {
@@ -34,6 +33,7 @@ namespace sm_repetition_algorithm.DAL.DataAccess
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Group> Groups { get; set; }
         public DbSet<Deck> Decks { get; set; }
         public DbSet<DeckAndTerm> DeckAndTerms { get; set; }
         public DbSet<Term> Terms { get; set; }

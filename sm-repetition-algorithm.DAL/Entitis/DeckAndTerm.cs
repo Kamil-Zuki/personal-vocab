@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Sm_repetition_algorithm.DAL.Entitis;
 
 namespace sm_repetition_algorithm.DAL.Entitis
 {
@@ -19,10 +18,10 @@ namespace sm_repetition_algorithm.DAL.Entitis
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
-        public long DeckId { get; set; }
-        public long TermId { get; set; }
+        public short DeckId { get; set; }
+        public short TermId { get; set; }
 
         public DateTime CreationDate { get; set; } = DateTime.UtcNow;
 

@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using sm_repetition_algorithm.BLL.Interfeces;
 using sm_repetition_algorithm.BLL.Logic;
 using sm_repetition_algorithm.DAL.DataAccess;
+using sm_repetition_algorithm.Interfeces;
+using sm_repetition_algorithm.Services;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 namespace sm_repetition_algorithm
 {
     public class Program
@@ -26,7 +26,8 @@ namespace sm_repetition_algorithm
             // Add services to the container.
 
             builder.Services.AddControllers();
-            builder.Services.AddScoped<ISuperMemo2Algorithm, SuperMemo2Algorithm>();
+            builder.Services.AddScoped<IFlashCardSevice, FlashCardSevice>();
+            builder.Services.AddScoped<IGroupSevice, GroupService>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //builder.Services.AddDbContext<RepetitionAlgorithmContext>(options =>
             //{
@@ -81,7 +82,7 @@ namespace sm_repetition_algorithm
                 }
                 });
 
-                });
+            });
 
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

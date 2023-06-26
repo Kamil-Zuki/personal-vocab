@@ -55,7 +55,7 @@ namespace sm_repetition_algorithm.Controllers
             }
         }
         [HttpPatch("v1/{id}")]
-        public async Task<ActionResult> PartialUpdateAsync(int id, [FromBody] JsonPatchDocument<DeckDTO> patchDoc)
+        public async Task<ActionResult> PatchAsync(int id, [FromBody] JsonPatchDocument<DeckDTO> patchDoc)
         {
             try
             {

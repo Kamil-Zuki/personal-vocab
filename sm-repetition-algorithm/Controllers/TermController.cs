@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using sm_repetition_algorithm.DTOs;
 using sm_repetition_algorithm.Interfeces;
@@ -35,8 +36,8 @@ namespace sm_repetition_algorithm.Controllers
         {
             try
             {
-                await _termService.GetAsync();
-                return Ok();
+                var termDTOs = await _termService.GetAsync();
+                return Ok(termDTOs);
             }
             catch (Exception ex)
             {
@@ -48,18 +49,20 @@ namespace sm_repetition_algorithm.Controllers
         {
             try
             {
-                return Ok();
+                var termDTO = await _termService.GetAsync(id);
+                return Ok(termDTO);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpPut("v1")]
-        public async Task<ActionResult> UpdateAsync()
+        [HttpPatch("v1")]
+        public async Task<ActionResult> UpdateAsync(int id, [FromBody] JsonPatchDocument<TermDTO> patchDoc)
         {
             try
             {
+                await _termService.UpdateAsync(id, patchDoc);
                 return Ok();
             }
             catch (Exception ex)
@@ -68,12 +71,12 @@ namespace sm_repetition_algorithm.Controllers
             }
         }
         [HttpDelete("v1")]
-        public async Task<ActionResult> DeleteAsync()
+        public async Task<ActionResult> DeleteAsync(int id)
         {
             try
             {
+                await _termService.DeleteAsync(id);
                 return Ok();
-
             }
             catch (Exception ex)
             {

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using sm_repetition_algorithm.DAL.DataAccess;
 using sm_repetition_algorithm.DAL.Entitis;
 using sm_repetition_algorithm.DTOs;
@@ -11,7 +13,7 @@ namespace sm_repetition_algorithm.Services
     {
         private readonly DataContext _dataContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public GroupService(DataContext dataContext, IHttpContextAccessor httpContextAccessor) 
+        public GroupService(DataContext dataContext, IHttpContextAccessor httpContextAccessor)
         {
             _dataContext = dataContext;
             _httpContextAccessor = httpContextAccessor;
@@ -39,7 +41,7 @@ namespace sm_repetition_algorithm.Services
         }
 
 
-        public async Task<List<GroupDTO>> GetAllAsync()
+        public async Task<List<GroupDTO>> GetAsync()
         {
             try
             {
@@ -61,15 +63,14 @@ namespace sm_repetition_algorithm.Services
         {
             try
             {
-                var group = await _dataContext.Groups.FindAsync(id);
-
-                return new GroupDTO()
+                return await _dataContext.Groups.Where(e => e.Id == id).Select(e => new GroupDTO()
                 {
-                    Id = group.Id,
-                    Name = group.Name,
-                    NewWordAmount = group.NewWordAmount,
-                    RepeatedWordAmount = group.RepeatedWordAmount
-                };
+                    Id = e.Id,
+                    Name = e.Name,
+                    NewWordAmount = e.NewWordAmount,
+                    RepeatedWordAmount = e.RepeatedWordAmount
+                }).FirstOrDefaultAsync();
+
             }
             catch (Exception ex)
             {
@@ -77,21 +78,34 @@ namespace sm_repetition_algorithm.Services
             }
         }
 
-        public async Task UpdateAsync(GroupDTO group)
+        public async Task PatchAsync(int id, [FromBody] JsonPatchDocument<GroupDTO> patchDoc)
         {
             try
             {
                 long userId = Convert.ToInt64(_httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
                 if (await _dataContext.Users.FindAsync(userId) == null)
                     await _dataContext.Users.AddAsync(new User() { Id = userId });
-                _dataContext.Groups.Update(new Group()
+
+                var existingGroup = _dataContext.Groups.FirstOrDefault(e => e.Id == id);
+                if (existingGroup == null)
+                    throw new Exception("The deck hasn't been found.");
+
+                var groupDTO = new GroupDTO()
                 {
-                    Id = group.Id,
-                    Name = group.Name,
-                    NewWordAmount = group.NewWordAmount,
-                    RepeatedWordAmount = group.RepeatedWordAmount,
-                    UserId = userId
-                });
+                    Id = existingGroup.Id,
+                    Name = existingGroup.Name,
+                    NewWordAmount = existingGroup.NewWordAmount,
+                    RepeatedWordAmount = existingGroup.RepeatedWordAmount,
+
+                };
+                patchDoc.ApplyTo(groupDTO);
+
+                existingGroup.Id = groupDTO.Id;
+                existingGroup.Name = groupDTO.Name;
+                existingGroup.NewWordAmount = groupDTO.NewWordAmount;
+                existingGroup.RepeatedWordAmount = groupDTO.RepeatedWordAmount;
+                existingGroup.UserId = userId;
+
                 await _dataContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -105,11 +119,12 @@ namespace sm_repetition_algorithm.Services
             try
             {
                 var group = await _dataContext.Groups.FirstOrDefaultAsync(e => e.Id == id);
-                if (group != null)
-                {
-                    _dataContext.Groups.Remove(group);
-                    await _dataContext.SaveChangesAsync();
-                }
+                if (group == null)
+                    throw new Exception("The term hasn't been found.");
+
+                _dataContext.Groups.Remove(group);
+                await _dataContext.SaveChangesAsync();
+
             }
             catch (Exception ex)
             {

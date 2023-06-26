@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using sm_repetition_algorithm.DAL.DataAccess;
 using sm_repetition_algorithm.DAL.Entitis;
 using sm_repetition_algorithm.DTOs;
@@ -21,10 +23,12 @@ namespace sm_repetition_algorithm.Services
             try
             {
                 var deckTerm = new DeckTerms()
-                {  
-                    DeckId = noIdTerm.DeckId
+                {
+                    DeckId = noIdTerm.DeckId,
+                    CreationDate = DateTime.UtcNow
                 };
                 await _dataContext.DeckTerms.AddAsync(deckTerm);
+
                 await _dataContext.Terms.AddAsync(new Term()
                 {
                     Text = noIdTerm.Text,
@@ -46,18 +50,20 @@ namespace sm_repetition_algorithm.Services
         {
             try
             {
-                var allTerms = await _dataContext.Terms.ToListAsync();
-                return new List<TermDTO>();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-        public async Task GetAsync(int id)
-        {
-            try
-            {
+                var termDTOs = await _dataContext.DeckTerms
+                .SelectMany(dt => dt.Terms.Select(t => new TermDTO
+                {
+                    Id = t.Id,
+                    Text = t.Text,
+                    Transcription = t.Transcription,
+                    Meaning = t.Meaning,
+                    Example = t.Example,
+                    Image = t.Image,
+                    DeckId = dt.DeckId
+                }))
+                .ToListAsync();
+
+                return termDTOs;
 
             }
             catch (Exception ex)
@@ -65,20 +71,65 @@ namespace sm_repetition_algorithm.Services
                 throw new Exception(ex.Message);
             }
         }
-        public async Task UpdateAsync(TermDTO termDTO)
+        public async Task<TermDTO> GetAsync(int id)
         {
             try
             {
-                _dataContext.Terms.Update(new Term()
+                return await _dataContext.Terms
+                    .Where(t => t.Id == id)
+                    .Select(t => new TermDTO
+                    {
+                        Id = t.Id,
+                        Text = t.Text,
+                        Transcription = t.Transcription,
+                        Meaning = t.Meaning,
+                        Example = t.Example,
+                        Image = t.Image,
+                        DeckId = t.DeckTerm.DeckId
+                    })
+                    .FirstOrDefaultAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task UpdateAsync(int id, [FromBody] JsonPatchDocument<TermDTO> patchDoc)
+        {
+            try
+            {
+                var existingDeckTerm = _dataContext.DeckTerms
+                    .Include(dt => dt.Terms)
+                    .FirstOrDefault(dt => dt.Terms.Any(t => t.Id == id));
+
+                if (existingDeckTerm == null)
+                    throw new Exception("The term hasn't been found in any Deck.");
+
+                var existingTerm = existingDeckTerm.Terms.FirstOrDefault(t => t.Id == id);
+
+                if (existingTerm == null)
+                    throw new Exception("The term hasn't been found.");
+
+                var termDTO = new TermDTO()
                 {
-                    Id = termDTO.Id,
-                    Text = termDTO.Text,
-                    Transcription = termDTO.Transcription,
-                    Meaning = termDTO.Meaning, 
-                    Example = termDTO.Example,
-                    Image = termDTO.Image,
-                    
-                });
+                    Id = existingTerm.Id,
+                    Text = existingTerm.Text,
+                    Transcription = existingTerm.Transcription,
+                    Meaning = existingTerm.Meaning,
+                    Example = existingTerm.Example,
+                    Image = existingTerm.Image,
+                    DeckId = existingDeckTerm.DeckId
+                };
+
+                patchDoc.ApplyTo(termDTO);
+
+                existingTerm.Text = termDTO.Text;
+                existingTerm.Transcription = termDTO.Transcription;
+                existingTerm.Meaning = termDTO.Meaning;
+                existingTerm.Example = termDTO.Example;
+                existingTerm.Image = termDTO.Image;
+
                 await _dataContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -86,11 +137,19 @@ namespace sm_repetition_algorithm.Services
                 throw new Exception(ex.Message);
             }
         }
-        public async Task DeleteAsync()
+        public async Task DeleteAsync(int id)
         {
             try
             {
+                var existingTerm = await _dataContext.Terms.Include(t => t.DeckTerm)
+                    .FirstOrDefaultAsync(t => t.Id == id);
 
+                if (existingTerm == null)
+                    throw new Exception("The term hasn't been found.");
+
+                _dataContext.DeckTerms.RemoveRange(existingTerm.DeckTerm);
+                _dataContext.Terms.Remove(existingTerm);
+                await _dataContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {

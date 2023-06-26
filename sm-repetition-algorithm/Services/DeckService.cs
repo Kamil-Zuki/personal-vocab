@@ -68,16 +68,14 @@ namespace sm_repetition_algorithm.Services
                 throw new Exception(ex.Message);
             }
         }
-        public async Task PatchAsync(int id, [FromBody] JsonPatchDocument<DeckDTO> patchDoc)
+        public async Task PatchAsync(int id, JsonPatchDocument<DeckDTO> patchDoc)
         {
             try
             {
                 var existingDeck = _dataContext.Decks.FirstOrDefault(e => e.Id == id);
 
                 if (existingDeck == null)
-                {
                     throw new Exception("The deck hasn't been found.");
-                }
 
                 var deckDTO = new DeckDTO()
                 {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using sm_repetition_algorithm.BLL.Interfeces;
 using sm_repetition_algorithm.DTOs;
@@ -36,7 +37,7 @@ namespace sm_repetition_algorithm.Controllers
         {
             try
             {
-                var groups = await _groupSevice.GetAllAsync();
+                var groups = await _groupSevice.GetAsync();
                 return Ok(groups);
             }
             catch (Exception e)
@@ -49,7 +50,7 @@ namespace sm_repetition_algorithm.Controllers
         {
             try
             {
-                var group = await _groupSevice.GetAllAsync();
+                var group = await _groupSevice.GetAsync(id);
                 return Ok(group);
             }
             catch(Exception ex) 
@@ -58,12 +59,12 @@ namespace sm_repetition_algorithm.Controllers
             }
         }
 
-        [HttpPut("v1")]
-        public async Task<ActionResult> UpdateAsync(GroupDTO group)
+        [HttpPatch("v1")]
+        public async Task<ActionResult> PatchAsync(int id, [FromBody] JsonPatchDocument<GroupDTO> patchDoc)
         {
             try
             {
-                await _groupSevice.UpdateAsync(group);
+                await _groupSevice.PatchAsync(id, patchDoc);
                 return Ok();
             }
             catch(Exception ex)

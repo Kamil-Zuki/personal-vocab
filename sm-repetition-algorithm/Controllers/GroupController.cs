@@ -9,7 +9,7 @@ namespace sm_repetition_algorithm.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("group")]
+    [Route("api/group")]
     public class GroupController : ControllerBase
     {
         private readonly IGroupSevice _groupSevice;
@@ -18,8 +18,8 @@ namespace sm_repetition_algorithm.Controllers
             _groupSevice = groupSevice;
         }
 
-        [HttpPost("v1/")]
-        public async Task<ActionResult> CreateAsync(GroupWithoutIdDTO groupDTO)
+        [HttpPost("v1")]
+        public async Task<ActionResult> CreateAsync(NoIdGroupDTO groupDTO)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace sm_repetition_algorithm.Controllers
             }
         }
         [HttpGet("v1")]
-        public async Task<ActionResult> GetAllAsync()
+        public async Task<ActionResult> GetAsync()
         {
             try
             {
@@ -45,7 +45,7 @@ namespace sm_repetition_algorithm.Controllers
             }
         }
         [HttpGet("v1/{id}")]
-        public async Task<ActionResult> GetByIdAsync(int id)
+        public async Task<ActionResult> GetAsync(int id)
         {
             try
             {

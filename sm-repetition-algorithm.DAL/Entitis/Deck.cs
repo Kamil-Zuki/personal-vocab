@@ -9,12 +9,12 @@ namespace sm_repetition_algorithm.DAL.Entitis
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public short Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
 
-        public long UserId { get; set; }
+        public int GroupId { get; set; }
 
-        public virtual DeckAndTerm? DeckAndTerm { get; set; }
+        public virtual DeckTerms? DeckTerm { get; set; }
         public virtual Group Group { get; set; }
     }
 }

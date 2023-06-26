@@ -7,7 +7,7 @@ namespace sm_repetition_algorithm.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("repetition")]
+    [Route("api/repetition")]
     public class RepetitionController : ControllerBase
     {
         private readonly IFlashCardSevice _superMemoAlgorithm;

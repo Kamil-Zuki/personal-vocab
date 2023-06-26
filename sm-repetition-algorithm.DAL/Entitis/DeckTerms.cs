@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace sm_repetition_algorithm.DAL.Entitis
 {
-    public class DeckAndTerm
+    public class DeckTerms
     {
-        public DeckAndTerm() 
+        public DeckTerms() 
         {
             Decs =  new HashSet<Deck>();
             Terms = new HashSet<Term>();
@@ -20,8 +20,8 @@ namespace sm_repetition_algorithm.DAL.Entitis
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public short DeckId { get; set; }
-        public short TermId { get; set; }
+        public int DeckId { get; set; }
+        public int TermId { get; set; }
 
         public DateTime CreationDate { get; set; } = DateTime.UtcNow;
 

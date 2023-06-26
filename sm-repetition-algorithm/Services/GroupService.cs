@@ -16,7 +16,7 @@ namespace sm_repetition_algorithm.Services
             _dataContext = dataContext;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task CreateAsync(GroupWithoutIdDTO group)
+        public async Task CreateAsync(NoIdGroupDTO group)
         {
             try
             {

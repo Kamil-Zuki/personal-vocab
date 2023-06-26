@@ -14,6 +14,6 @@ namespace sm_repetition_algorithm.DAL.Entitis
         public string Example { get; set; }
         public string Image { get; set; }
 
-        public virtual DeckAndTerm DeckAndTerm { get; set; }
+        public virtual DeckTerms DeckTerm { get; set; }
     }
 }

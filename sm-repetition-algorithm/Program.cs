@@ -8,6 +8,8 @@ using sm_repetition_algorithm.DAL.DataAccess;
 using sm_repetition_algorithm.Interfeces;
 using sm_repetition_algorithm.Services;
 using System.Text;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 namespace sm_repetition_algorithm
 {
     public class Program
@@ -25,10 +27,12 @@ namespace sm_repetition_algorithm
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<IFlashCardSevice, FlashCardSevice>();
             builder.Services.AddScoped<IGroupSevice, GroupService>();
-            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddScoped<IDeckService, DeckService>();
+            builder.Services.AddScoped<ITermService, TermService>();
             //builder.Services.AddDbContext<RepetitionAlgorithmContext>(options =>
             //{
             //    options.UseNpgsql(builder.Configuration.GetConnectionString("Default")!);
@@ -100,7 +104,7 @@ namespace sm_repetition_algorithm
                 };
             });
 
-
+            
             builder.Services.AddAuthorization();
 
             var app = builder.Build();

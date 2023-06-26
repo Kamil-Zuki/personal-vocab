@@ -35,7 +35,7 @@ namespace sm_repetition_algorithm.DAL.DataAccess
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Deck> Decks { get; set; }
-        public DbSet<DeckAndTerm> DeckAndTerms { get; set; }
+        public DbSet<DeckTerms> DeckTerms { get; set; }
         public DbSet<Term> Terms { get; set; }
         public DbSet<RepetitionData> Repetitions { get; set; }
     }

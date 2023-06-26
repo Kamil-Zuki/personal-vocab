@@ -1,23 +1,28 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using sm_repetition_algorithm.DTOs;
+using sm_repetition_algorithm.Interfeces;
 
 namespace sm_repetition_algorithm.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("deck")]
+    [Route("api/deck")]
     public class DeckController : ControllerBase
     {
-        public DeckController() 
+        private readonly IDeckService _deckService;
+        public DeckController(IDeckService deckService) 
         {
-
+            _deckService = deckService;
         }
 
         [HttpPost("v1")]
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> CreateAsync(NoIdDeckDTO noIdDeck)
         {
             try
             {
+                await _deckService.CreateAsync(noIdDeck);
                 return Ok();
             }
             catch(Exception ex)
@@ -26,11 +31,11 @@ namespace sm_repetition_algorithm.Controllers
             }
         }
         [HttpGet("v1")]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult> GetAsync()
         {
             try
             {
-                return Ok();
+                return Ok(await _deckService.GetAsync());
             }
             catch(Exception ex)
             {
@@ -38,22 +43,24 @@ namespace sm_repetition_algorithm.Controllers
             }
         }
         [HttpGet("v1/{id}")]
-        public async Task<ActionResult> GetById()
+        public async Task<ActionResult> GetAsync(int id)
         {
             try
             {
-                return Ok();
+                return Ok(await _deckService.GetAsync(id));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpPut("v1")]
-        public async Task<ActionResult> Update()
+        [HttpPatch("v1/{id}")]
+        public async Task<ActionResult> PartialUpdateAsync(int id, [FromBody] JsonPatchDocument<DeckDTO> patchDoc)
         {
             try
             {
+                await _deckService.PatchAsync(id,patchDoc);
+                
                 return Ok();
             }
             catch (Exception ex)
@@ -62,12 +69,12 @@ namespace sm_repetition_algorithm.Controllers
             }
         }
         [HttpDelete("v1")]
-        public async Task<ActionResult> Delete()
+        public async Task<ActionResult> DeleteAsync(int id)
         {
             try
             {
+                await _deckService.DeleteAsync(id);
                 return Ok();
-
             }
             catch (Exception ex)
             {

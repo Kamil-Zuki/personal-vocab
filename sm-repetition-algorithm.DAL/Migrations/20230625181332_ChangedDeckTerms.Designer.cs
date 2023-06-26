@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using sm_repetition_algorithm.DAL.DataAccess;
@@ -11,9 +12,11 @@ using sm_repetition_algorithm.DAL.DataAccess;
 namespace sm_repetition_algorithm.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230625181332_ChangedDeckTerms")]
+    partial class ChangedDeckTerms
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,16 +27,19 @@ namespace sm_repetition_algorithm.DAL.Migrations
 
             modelBuilder.Entity("sm_repetition_algorithm.DAL.Entitis.Deck", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<short>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<short>("Id"));
+
+                    b.Property<int?>("DeckAndTermId")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("DeckTermId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("GroupId")
+                    b.Property<int>("GroupId1")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -42,9 +48,9 @@ namespace sm_repetition_algorithm.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DeckTermId");
+                    b.HasIndex("DeckAndTermId");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("GroupId1");
 
                     b.ToTable("Decks");
                 });
@@ -183,17 +189,17 @@ namespace sm_repetition_algorithm.DAL.Migrations
 
             modelBuilder.Entity("sm_repetition_algorithm.DAL.Entitis.Deck", b =>
                 {
-                    b.HasOne("sm_repetition_algorithm.DAL.Entitis.DeckTerms", "DeckTerm")
+                    b.HasOne("sm_repetition_algorithm.DAL.Entitis.DeckTerms", "DeckAndTerm")
                         .WithMany("Decs")
-                        .HasForeignKey("DeckTermId");
+                        .HasForeignKey("DeckAndTermId");
 
                     b.HasOne("sm_repetition_algorithm.DAL.Entitis.Group", "Group")
                         .WithMany("Decks")
-                        .HasForeignKey("GroupId")
+                        .HasForeignKey("GroupId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DeckTerm");
+                    b.Navigation("DeckAndTerm");
 
                     b.Navigation("Group");
                 });

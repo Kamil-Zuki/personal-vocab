@@ -8,10 +8,6 @@ namespace personal_vocab.DAL.DataAccess
     {
         private readonly IConfiguration _configuration;
 
-        public DataContext()
-        {
-
-        }
         public DataContext(DbContextOptions<DataContext> options)
             : base(options)
         {

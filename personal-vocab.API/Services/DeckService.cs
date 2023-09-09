@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using personal_vocab.DAL.DataAccess;
 using personal_vocab.DAL.Entitis;
@@ -38,11 +37,11 @@ namespace personal_vocab.Services
         {
             try
             {
-                return (await _dataContext.Decks.ToListAsync()).Select(x => new DeckDTO 
+                return (await _dataContext.Decks.ToListAsync()).Select(x => new DeckDTO
                 {
                     Id = x.Id,
-                    Name = x.Name, 
-                    GroupId = x.GroupId 
+                    Name = x.Name,
+                    GroupId = x.GroupId
                 }).ToList();
             }
             catch (Exception ex)
@@ -97,7 +96,7 @@ namespace personal_vocab.Services
             }
         }
 
-        
+
         public async Task DeleteAsync(int id)
         {
             try

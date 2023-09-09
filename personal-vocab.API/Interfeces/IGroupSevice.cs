@@ -11,5 +11,6 @@ namespace personal_vocab.Interfeces
         Task<GroupDTO> GetAsync(int id);
         Task PatchAsync(int id, [FromBody] JsonPatchDocument<GroupDTO> patchDoc);
         Task DeleteAsync(int id);
+        Task GetUserIds();
     }
 }

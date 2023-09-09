@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using personal_vocab.BLL.Interfeces;
 using personal_vocab.DTOs;
 using personal_vocab.Interfeces;
-using System.Text.RegularExpressions;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System.Text;
 
 namespace personal_vocab.Controllers
 {
@@ -14,10 +15,27 @@ namespace personal_vocab.Controllers
     public class GroupController : ControllerBase
     {
         private readonly IGroupSevice _groupSevice;
-        public GroupController(IGroupSevice groupSevice) 
+        public GroupController(IGroupSevice groupSevice)
         {
             _groupSevice = groupSevice;
         }
+
+
+        [HttpGet("auth-user-ids")]
+        public async Task<IActionResult> GetUserIds()
+        {
+            try
+            {
+                await _groupSevice.GetUserIds();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, ex.Message);
+            }
+        }
+
 
         [HttpPost("v1")]
         public async Task<ActionResult> CreateAsync(NoIdGroupDTO groupDTO)
@@ -53,7 +71,7 @@ namespace personal_vocab.Controllers
                 var group = await _groupSevice.GetAsync(id);
                 return Ok(group);
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
@@ -67,7 +85,7 @@ namespace personal_vocab.Controllers
                 await _groupSevice.PatchAsync(id, patchDoc);
                 return Ok();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
@@ -81,7 +99,7 @@ namespace personal_vocab.Controllers
                 await _groupSevice.DeleteAsync(id);
                 return Ok();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }

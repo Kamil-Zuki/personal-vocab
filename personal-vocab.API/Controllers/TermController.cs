@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using personal_vocab.DTOs;
 using personal_vocab.Interfeces;
-using personal_vocab.Services;
 
 namespace personal_vocab.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/term")]
+    [Route("api/v1/term")]
     public class TermController : ControllerBase
     {
         private readonly ITermService _termService;
@@ -18,7 +17,7 @@ namespace personal_vocab.Controllers
             _termService = termService;
         }
 
-        [HttpPost("v1/")]
+        [HttpPost]
         public async Task<ActionResult> CreateAsync(NoIdTermDTO noIdTrerm)
         {
             try
@@ -31,7 +30,7 @@ namespace personal_vocab.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpGet("v1")]
+        [HttpGet]
         public async Task<ActionResult> GetAsync()
         {
             try
@@ -44,7 +43,7 @@ namespace personal_vocab.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpGet("v1/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> GetAsync(int id)
         {
             try
@@ -57,7 +56,7 @@ namespace personal_vocab.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpPatch("v1")]
+        [HttpPatch]
         public async Task<ActionResult> UpdateAsync(int id, [FromBody] JsonPatchDocument<TermDTO> patchDoc)
         {
             try
@@ -70,7 +69,7 @@ namespace personal_vocab.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpDelete("v1")]
+        [HttpDelete]
         public async Task<ActionResult> DeleteAsync(int id)
         {
             try

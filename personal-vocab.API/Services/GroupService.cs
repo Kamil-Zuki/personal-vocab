@@ -9,6 +9,7 @@ using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
 using System.Security.Claims;
 using System.Text;
+using System.Configuration;
 
 namespace personal_vocab.Services
 {
@@ -16,10 +17,12 @@ namespace personal_vocab.Services
     {
         private readonly DataContext _dataContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public GroupService(DataContext dataContext, IHttpContextAccessor httpContextAccessor)
+        private readonly IConfiguration _configuration;
+        public GroupService(DataContext dataContext, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             _dataContext = dataContext;
             _httpContextAccessor = httpContextAccessor;
+            _configuration = configuration;
         }
         public async Task CreateAsync(NoIdGroupDTO group)
         {
@@ -139,62 +142,44 @@ namespace personal_vocab.Services
         {
             try
             {
+                Console.WriteLine("GetUserIds starts");
                 var factory = new ConnectionFactory
                 {
-                    HostName = "localhost",
-                    UserName = "guest",
-                    Password = "1234"
+                    HostName = _configuration.GetSection("RabbitMq:HostName").Get<string>(),
+                    Port = 5672,
+                    UserName = _configuration.GetSection("RabbitMq:UserName").Get<string>(),
+                    Password = _configuration.GetSection("RabbitMq:Password").Get<string>()
                 };
 
-                using var connection = factory.CreateConnection();
-                using var channel = connection.CreateModel();
-
-                channel.QueueDeclare(queue: "user-information",
-                                     durable: false,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
-
-                var consumer = new EventingBasicConsumer(channel);
-                var userIds = new List<long>();
-                consumer.Received += (model, ea) =>
+                using (var connection = factory.CreateConnection())
+                using (var channel = connection.CreateModel())
                 {
-                    var body = ea.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
-                    if (long.TryParse(message, out var userId))
+                    Console.WriteLine(" [*] Waiting for messages.");
+
+                    channel.QueueDeclare(queue: "user-information", durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+
+                    var consumer = new EventingBasicConsumer(channel);
+
+                    consumer.Received += (model, ea) =>
                     {
-                        userIds.Add(userId);
-                    }
-                };
-
-                channel.BasicConsume(queue: "user-information",
-                                     autoAck: true,
-                                     consumer: consumer);
-                userIds = userIds.Distinct().ToList();
-
-                var existentUserIds = await _dataContext.Users.Where(e => userIds.Contains(e.Id)).Select(x => x.Id).ToListAsync();
-                var noExistingUserIds = userIds.Except(existentUserIds);
-                if (noExistingUserIds.Count() == 0)
-                    throw new Exception("All users exist already");
-
-                var users = noExistingUserIds.Select(x => new User()
-                {
-                    Id = x
-                }).ToArray();
-
-                if (userIds.Count == 0)
-                    throw new Exception("No user ids were received");
-
-                foreach (var user in users)
-                {
-                    await _dataContext.Users.AddAsync(user);
+                        var body = ea.Body.ToArray();
+                        var message = Encoding.UTF8.GetString(body);
+                        var routingKey = ea.RoutingKey;
+                        Console.WriteLine(" [x] Received '{0}':'{1}'",
+                            routingKey, message);
+                    };
+                    channel.BasicConsume(queue: "user-information",
+                        autoAck: true,
+                        consumer: consumer);
+                    
                 }
 
-                 await _dataContext.SaveChangesAsync();
 
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message.ToString());
                 throw new Exception(ex.Message);
             }
         }

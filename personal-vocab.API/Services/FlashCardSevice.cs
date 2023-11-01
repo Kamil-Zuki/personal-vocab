@@ -1,10 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using personal_vocab.BLL.Interfeces;
+﻿using personal_vocab.BLL.Interfeces;
 using personal_vocab.BLL.Models;
 using personal_vocab.DAL.DataAccess;
-using personal_vocab.DAL.Entitis;
-using personal_vocab.DTOs;
-using System.Security.Claims;
 
 namespace personal_vocab.BLL.Logic
 {
@@ -12,11 +8,11 @@ namespace personal_vocab.BLL.Logic
     {
         private readonly DataContext _dataContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public FlashCardSevice(DataContext repetitionAlgorithmContext, IHttpContextAccessor httpContextAccessor) 
+        public FlashCardSevice(DataContext repetitionAlgorithmContext, IHttpContextAccessor httpContextAccessor)
         {
             _dataContext = repetitionAlgorithmContext;
             _httpContextAccessor = httpContextAccessor;
-    }
+        }
         public async Task Learn(FlashCard card)
         {
             if (card.Quality <= 0 || card.Quality > 5)//Quality also known as quality of assessment.
@@ -32,7 +28,7 @@ namespace personal_vocab.BLL.Logic
             int interval;
             float easiness;
             if (repetitionData.Repetitions == 0)//Default values
-            { 
+            {
                 repetitions = 0;
                 interval = 1;
                 easiness = 2.5F;
@@ -41,12 +37,12 @@ namespace personal_vocab.BLL.Logic
             {
                 //retrieve the stored values 
                 repetitions = repetitionData.Repetitions; //this is the number of times a user sees a flashcard.
-                                                //0 means they haven't studied it yet,
-                                                //1 means it is their first time, and so on.
-                                                //It is also referred to as n in some of the documentation.
+                                                          //0 means they haven't studied it yet,
+                                                          //1 means it is their first time, and so on.
+                                                          //It is also referred to as n in some of the documentation.
                 easiness = repetitionData.Easiness;
                 interval = repetitionData.Interval; // this is the length of time (in days) between repetitions.
-                                          // It is the "space" of spaced repetition.
+                                                    // It is the "space" of spaced repetition.
             }
 
             // easiness factor

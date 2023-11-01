@@ -3,15 +3,12 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using personal_vocab.DTOs;
 using personal_vocab.Interfeces;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System.Text;
 
 namespace personal_vocab.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/group")]
+    [Route("api/v1/group")]
     public class GroupController : ControllerBase
     {
         private readonly IGroupSevice _groupSevice;
@@ -21,7 +18,7 @@ namespace personal_vocab.Controllers
         }
 
 
-        [HttpGet("auth-user-ids")]
+        [HttpGet("sync-user-ids")]
         public async Task<IActionResult> GetUserIds()
         {
             try
@@ -37,7 +34,7 @@ namespace personal_vocab.Controllers
         }
 
 
-        [HttpPost("v1")]
+        [HttpPost]
         public async Task<ActionResult> CreateAsync(NoIdGroupDTO groupDTO)
         {
             try
@@ -50,7 +47,7 @@ namespace personal_vocab.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-        [HttpGet("v1")]
+        [HttpGet]
         public async Task<ActionResult> GetAsync()
         {
             try
@@ -63,7 +60,7 @@ namespace personal_vocab.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-        [HttpGet("v1/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> GetAsync(int id)
         {
             try
@@ -77,7 +74,7 @@ namespace personal_vocab.Controllers
             }
         }
 
-        [HttpPatch("v1")]
+        [HttpPatch]
         public async Task<ActionResult> PatchAsync(int id, [FromBody] JsonPatchDocument<GroupDTO> patchDoc)
         {
             try
@@ -91,7 +88,7 @@ namespace personal_vocab.Controllers
             }
         }
 
-        [HttpDelete("v1")]
+        [HttpDelete]
         public async Task<ActionResult> DeleteAsync(int id)
         {
             try

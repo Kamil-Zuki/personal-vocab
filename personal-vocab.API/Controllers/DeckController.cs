@@ -8,7 +8,7 @@ namespace personal_vocab.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/deck")]
+    [Route("api/v1/deck")]
     public class DeckController : ControllerBase
     {
         private readonly IDeckService _deckService;
@@ -17,7 +17,7 @@ namespace personal_vocab.Controllers
             _deckService = deckService;
         }
 
-        [HttpPost("v1")]
+        [HttpPost]
         public async Task<ActionResult> CreateAsync(NoIdDeckDTO noIdDeck)
         {
             try
@@ -30,7 +30,7 @@ namespace personal_vocab.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpGet("v1")]
+        [HttpGet]
         public async Task<ActionResult> GetAsync()
         {
             try
@@ -42,7 +42,7 @@ namespace personal_vocab.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpGet("v1/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> GetAsync(int id)
         {
             try
@@ -54,7 +54,7 @@ namespace personal_vocab.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpPatch("v1/{id}")]
+        [HttpPatch("{id}")]
         public async Task<ActionResult> PatchAsync(int id, [FromBody] JsonPatchDocument<DeckDTO> patchDoc)
         {
             try
@@ -68,7 +68,7 @@ namespace personal_vocab.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpDelete("v1")]
+        [HttpDelete]
         public async Task<ActionResult> DeleteAsync(int id)
         {
             try

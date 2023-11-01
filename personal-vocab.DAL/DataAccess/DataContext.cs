@@ -25,7 +25,6 @@ namespace personal_vocab.DAL.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Add your model configuration here
         }
 
         public DbSet<User> Users { get; set; }

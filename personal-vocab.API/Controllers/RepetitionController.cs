@@ -7,7 +7,7 @@ namespace personal_vocab.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/repetition")]
+    [Route("api/v1/repetition")]
     public class RepetitionController : ControllerBase
     {
         private readonly IFlashCardSevice _superMemoAlgorithm;
@@ -18,7 +18,7 @@ namespace personal_vocab.Controllers
             //_httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpPost("v1/learn")]
+        [HttpPost("learn")]
         public async Task<ActionResult> Repetition([FromQuery] FlashCard card)
         {
             try

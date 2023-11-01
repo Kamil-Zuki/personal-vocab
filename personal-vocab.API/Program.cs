@@ -8,8 +8,6 @@ using personal_vocab.DAL.DataAccess;
 using personal_vocab.Interfeces;
 using personal_vocab.Services;
 using System.Text;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
 namespace personal_vocab
 {
     public class Program
@@ -61,7 +59,7 @@ namespace personal_vocab
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Repetition Algorithm API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Personal Vocabulary API", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -104,7 +102,7 @@ namespace personal_vocab
                 };
             });
 
-            
+
             builder.Services.AddAuthorization();
 
             var app = builder.Build();
@@ -113,13 +111,13 @@ namespace personal_vocab
 
             app.UseSwagger(c =>
             {
-                c.RouteTemplate = "repetition/swagger/{documentname}/swagger.json";
+                c.RouteTemplate = "personal-vocab/swagger/{documentname}/swagger.json";
             });
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/repetition/swagger/v1/swagger.json", "Repetition Algorithm API");
-                c.RoutePrefix = "repetition/swagger";
+                c.SwaggerEndpoint("/personal-vocab/swagger/v1/swagger.json", "Personal Vocabulary API");
+                c.RoutePrefix = "personal-vocab/swagger";
             });
 
             app.MapControllers();

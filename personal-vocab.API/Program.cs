@@ -27,7 +27,7 @@ namespace personal_vocab
 
             builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            builder.Services.AddScoped<IFlashCardSevice, FlashCardSevice>();
+            builder.Services.AddScoped<IFlashCardService, FlashCardService>();
             builder.Services.AddScoped<IGroupSevice, GroupService>();
             builder.Services.AddScoped<IDeckService, DeckService>();
             builder.Services.AddScoped<ITermService, TermService>();

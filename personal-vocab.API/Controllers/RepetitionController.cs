@@ -10,9 +10,9 @@ namespace personal_vocab.Controllers
     [Route("api/v1/repetition")]
     public class RepetitionController : ControllerBase
     {
-        private readonly IFlashCardSevice _superMemoAlgorithm;
+        private readonly IFlashCardService _superMemoAlgorithm;
         //private readonly IHttpContextAccessor _httpContextAccessor;
-        public RepetitionController(IFlashCardSevice superMemoAlgorithm/*, IHttpContextAccessor httpContextAccessor*/)
+        public RepetitionController(IFlashCardService superMemoAlgorithm/*, IHttpContextAccessor httpContextAccessor*/)
         {
             _superMemoAlgorithm = superMemoAlgorithm;
             //_httpContextAccessor = httpContextAccessor;

@@ -4,11 +4,11 @@ using personal_vocab.DAL.DataAccess;
 
 namespace personal_vocab.BLL.Logic
 {
-    public class FlashCardSevice : IFlashCardSevice
+    public class FlashCardService : IFlashCardService
     {
         private readonly DataContext _dataContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public FlashCardSevice(DataContext repetitionAlgorithmContext, IHttpContextAccessor httpContextAccessor)
+        public FlashCardService(DataContext repetitionAlgorithmContext, IHttpContextAccessor httpContextAccessor)
         {
             _dataContext = repetitionAlgorithmContext;
             _httpContextAccessor = httpContextAccessor;

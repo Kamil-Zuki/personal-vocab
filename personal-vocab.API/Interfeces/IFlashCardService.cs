@@ -5,7 +5,7 @@ using personal_vocab.DTOs;
 
 namespace personal_vocab.BLL.Interfeces
 {
-    public interface IFlashCardSevice
+    public interface IFlashCardService
     {
         Task Learn(FlashCard card);
 

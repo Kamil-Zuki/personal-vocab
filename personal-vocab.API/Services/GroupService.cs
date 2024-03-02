@@ -5,11 +5,11 @@ using personal_vocab.DAL.DataAccess;
 using personal_vocab.DAL.Entitis;
 using personal_vocab.DTOs;
 using personal_vocab.Interfeces;
-using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System.Security.Claims;
 using System.Text;
-using System.Configuration;
+using System.Threading.Channels;
 
 namespace personal_vocab.Services
 {
@@ -18,11 +18,20 @@ namespace personal_vocab.Services
         private readonly DataContext _dataContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
-        public GroupService(DataContext dataContext, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+
+
+        private readonly IServiceProvider _serviceProvider;
+
+        private readonly ILogger<GroupService> _logger;
+
+        public IServiceScope scope { get; set; }
+        public GroupService(DataContext dataContext, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, ILogger<GroupService> logger, IServiceProvider serviceProvider)
         {
             _dataContext = dataContext;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
+            _logger = logger;
+            _serviceProvider = serviceProvider;
         }
         public async Task CreateAsync(NoIdGroupDTO group)
         {
@@ -151,30 +160,21 @@ namespace personal_vocab.Services
                     Password = _configuration.GetSection("RabbitMq:Password").Get<string>()
                 };
 
-                using (var connection = factory.CreateConnection())
-                using (var channel = connection.CreateModel())
-                {
-                    Console.WriteLine(" [*] Waiting for messages.");
+                var usersToAdd = new List<long>();  // Accumulate the user IDs
 
-                    channel.QueueDeclare(queue: "user-information", durable: false, exclusive: false, autoDelete: false, arguments: null);
+                var connection = factory.CreateConnection();
+                var channel = connection.CreateModel();
 
+                channel.QueueDeclare(queue: "user-information", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-                    var consumer = new EventingBasicConsumer(channel);
+                var consumer = new EventingBasicConsumer(channel);
+                consumer.Received += ReceivedHandler;
 
-                    consumer.Received += (model, ea) =>
-                    {
-                        var body = ea.Body.ToArray();
-                        var message = Encoding.UTF8.GetString(body);
-                        var routingKey = ea.RoutingKey;
-                        Console.WriteLine(" [x] Received '{0}':'{1}'",
-                            routingKey, message);
-                    };
-                    channel.BasicConsume(queue: "user-information",
-                        autoAck: true,
-                        consumer: consumer);
-                    
-                }
+                channel.BasicConsume(queue: "user-information",
+                            autoAck: true,
+                            consumer: consumer);
 
+                await _dataContext.SaveChangesAsync();
 
             }
             catch (Exception ex)
@@ -183,5 +183,32 @@ namespace personal_vocab.Services
                 throw new Exception(ex.Message);
             }
         }
+        private async void ReceivedHandler(object? sender, BasicDeliverEventArgs ea)
+        {
+            try
+            {
+                if (scope == null)
+                    scope = _serviceProvider.CreateScope();
+
+                byte[]? body = ea.Body.ToArray();
+                string? message = Encoding.UTF8.GetString(body);
+                string? routingKey = ea.RoutingKey;
+
+                DataContext? dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+                User? user = dbContext.Users.FirstOrDefault(x => x.Id == Convert.ToInt64(message));
+                if (user == null)
+                {
+                    dbContext.Users.Add(new User { Id = Convert.ToInt64(message) });
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
     }
+
 }
+

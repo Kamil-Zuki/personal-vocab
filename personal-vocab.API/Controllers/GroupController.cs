@@ -17,22 +17,21 @@ namespace personal_vocab.Controllers
             _groupSevice = groupSevice;
         }
 
+        //[AllowAnonymous]
+        //[HttpGet("sync-user-ids")]
+        //public async Task<IActionResult> GetUserIds()
+        //{
+        //    try
+        //    {
+        //        await _groupSevice.GetUserIds();
 
-        [HttpGet("sync-user-ids")]
-        public async Task<IActionResult> GetUserIds()
-        {
-            try
-            {
-                await _groupSevice.GetUserIds();
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(400, ex.Message);
-            }
-        }
-
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(400, ex.Message);
+        //    }
+        //}
 
         [HttpPost]
         public async Task<ActionResult> CreateAsync(NoIdGroupDTO groupDTO)

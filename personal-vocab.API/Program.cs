@@ -24,7 +24,9 @@ namespace personal_vocab
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            #if RELEASE
             builder.WebHost.UseUrls("http://*:80");
+            #endif
             builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<IFlashCardService, FlashCardService>();

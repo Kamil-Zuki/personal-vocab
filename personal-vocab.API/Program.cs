@@ -54,7 +54,7 @@ public class Program()
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new OpenApiInfo { Title = "Dictionary Parser API", Version = "v1" });
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "Personal Vocabulary API", Version = "v1" });
             options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,

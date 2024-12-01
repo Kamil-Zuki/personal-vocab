@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "personal-vocab.API", "personal-vocab.API.csproj", "{7F5E2A26-A304-41C8-B2A6-B305542E84AB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "personal-vocab.DAL", "..\sm-repetition-algorithm.DAL\personal-vocab.DAL.csproj", "{0FA586C8-E429-4F5F-849B-8D5A614483B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "personal-vocab.DAL", "..\personal-vocab.DAL\personal-vocab.DAL.csproj", "{C1C28A2D-BEA2-4D21-BAAD-FAD4AC6BA344}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{7F5E2A26-A304-41C8-B2A6-B305542E84AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F5E2A26-A304-41C8-B2A6-B305542E84AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F5E2A26-A304-41C8-B2A6-B305542E84AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0FA586C8-E429-4F5F-849B-8D5A614483B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0FA586C8-E429-4F5F-849B-8D5A614483B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0FA586C8-E429-4F5F-849B-8D5A614483B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0FA586C8-E429-4F5F-849B-8D5A614483B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1C28A2D-BEA2-4D21-BAAD-FAD4AC6BA344}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1C28A2D-BEA2-4D21-BAAD-FAD4AC6BA344}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1C28A2D-BEA2-4D21-BAAD-FAD4AC6BA344}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1C28A2D-BEA2-4D21-BAAD-FAD4AC6BA344}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

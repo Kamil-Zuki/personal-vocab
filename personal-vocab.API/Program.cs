@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -21,12 +22,18 @@ public class Program()
         builder.WebHost.UseUrls("http://*:80");
         #endif
         builder.Services.AddControllers().AddNewtonsoftJson();
-        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        builder.Services.AddScoped<IFlashCardService, FlashCardService>();
+        //builder.Services.AddScoped<IFlashCardService, FlashCardService>();
         builder.Services.AddScoped<IGroupSevice, GroupService>();
-        builder.Services.AddScoped<IDeckService, DeckService>();
-        builder.Services.AddScoped<ITermService, TermService>();
-        
+        //builder.Services.AddScoped<IDeckService, DeckService>();
+        //builder.Services.AddScoped<ITermService, TermService>();
+
+        builder.Services.AddSingleton(s => new MapperConfiguration(cfg =>
+        {
+            cfg.AddMaps(typeof(Program).Assembly);
+            cfg.AllowNullDestinationValues = false;
+            cfg.AllowNullCollections = false;
+        }).CreateMapper());
+
         var configuration = builder.Configuration;
 
         builder.Services.AddDbContext<DataContext>(options =>

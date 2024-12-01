@@ -1,16 +1,10 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
-using personal_vocab.DTOs;
+﻿using personal_vocab.DTOs.Requests;
+using personal_vocab.DTOs.Responses;
 
-namespace personal_vocab.Interfeces
+namespace personal_vocab.Interfeces;
+
+public interface IGroupSevice
 {
-    public interface IGroupSevice
-    {
-        Task CreateAsync(NoIdGroupDTO group);
-        Task<List<GroupDTO>> GetAsync();
-        Task<GroupDTO> GetAsync(int id);
-        Task PatchAsync(int id, [FromBody] JsonPatchDocument<GroupDTO> patchDoc);
-        Task DeleteAsync(int id);
-        Task GetUserIds();
-    }
+    Task<GroupDto> CreateAsync(CreateGroupDto model);
 }
+

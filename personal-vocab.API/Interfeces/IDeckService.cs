@@ -6,11 +6,7 @@ namespace personal_vocab.Interfeces
 {
     public interface IDeckService
     {
-        Task CreateAsync(NoIdDeckDTO noIdDeck);
-        Task<List<DeckDTO>> GetAsync();
-        Task<DeckDTO> GetAsync(int id);
-        Task PatchAsync(int id, [FromBody] JsonPatchDocument<DeckDTO> patchDoc);
-        Task DeleteAsync(int id);
+
 
     }
 }

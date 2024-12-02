@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using personal_vocab.DTOs.Requests;
 using personal_vocab.DTOs.Responses;
 using personal_vocab.Interfeces;

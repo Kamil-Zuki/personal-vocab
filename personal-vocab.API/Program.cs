@@ -22,8 +22,8 @@ public class Program()
         builder.Services.AddControllers().AddNewtonsoftJson();
         //builder.Services.AddScoped<IFlashCardService, FlashCardService>();
         builder.Services.AddScoped<IGroupSevice, GroupService>();
-        //builder.Services.AddScoped<IDeckService, DeckService>();
-        //builder.Services.AddScoped<ITermService, TermService>();
+        builder.Services.AddScoped<IDeckService, DeckService>();
+        builder.Services.AddScoped<ITermService, TermService>();
 
         builder.Services.AddSingleton(s => new MapperConfiguration(cfg =>
         {

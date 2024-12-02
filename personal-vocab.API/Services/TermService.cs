@@ -14,12 +14,21 @@ public class TermService(DataContext dbContext, IMapper mapper) : ITermService
     private readonly IMapper _mapper = mapper;
     public async Task<TermDto> CreateAsync(CreateTermDto model)
     {
-        var term = _mapper.Map<Term>(model);
-        _dbContext.Terms.Add(term);
+        var termDeck = new DeckTerms()
+        {
+            DeckId = model.DeckId,
+            Term = _mapper.Map<Term>(model)
+        };
+        termDeck.Term.RepetitionData = new RepetitionData();
+
+        _dbContext.DeckTerms.Add(termDeck);
 
         await dbContext.SaveChangesAsync();
 
-        return _mapper.Map<TermDto>(term);
+        var termDto = _mapper.Map<TermDto>(termDeck.Term);
+        termDto.DeckId = model.DeckId;
+
+        return termDto;
     }
 
     public async Task<bool> DeleteAsync(Guid id)

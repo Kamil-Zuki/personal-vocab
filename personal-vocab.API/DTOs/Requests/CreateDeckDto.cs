@@ -3,6 +3,6 @@
 public class CreateDeckDto
 {
     public string Name { get; set; }
-    public int? GroupId { get; set; }
+    public Guid GroupId { get; set; }
 
 }

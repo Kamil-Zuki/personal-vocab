@@ -9,6 +9,6 @@ public class DeckTerms
 
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
 
-    public virtual ICollection<Deck> Decs { get; set; }
-    public virtual ICollection<Term> Terms { get; set; }
+    public virtual Deck Deck { get; set; }
+    public virtual Term Term { get; set; }
 }

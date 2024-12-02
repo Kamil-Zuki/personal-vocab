@@ -6,7 +6,7 @@ namespace personal_vocab.DAL.DataAccess
 {
     public class DataContext : DbContext
     {
-        private readonly IConfiguration _configuration;
+        //private readonly IConfiguration _configuration;
         public DbSet<Group> Groups { get; set; }
         public DbSet<Deck> Decks { get; set; }
         public DbSet<DeckTerms> DeckTerms { get; set; }

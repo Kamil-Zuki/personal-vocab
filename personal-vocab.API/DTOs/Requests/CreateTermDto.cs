@@ -8,6 +8,6 @@ public class CreateTermDto
     public string Example { get; set; }
     public string Image { get; set; }
 
-    public int DeckId { get; set; }
+    public Guid DeckId { get; set; }
 }
 

@@ -36,7 +36,7 @@ public class GroupController(IGroupSevice groupSevice) : ControllerBase
         return Ok(result);
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public async Task<ActionResult<GroupDto>> UpdateAsync(Guid id, CreateGroupDto model)
     {
         var result = await _groupSevice.UpdateAsync(id, model);

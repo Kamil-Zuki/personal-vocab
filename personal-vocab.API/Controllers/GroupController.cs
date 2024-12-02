@@ -5,7 +5,7 @@ using personal_vocab.Interfeces;
 
 namespace personal_vocab.Controllers;
 
-//[Authorize]
+[Authorize]
 [ApiController]
 [Route("api/v1/group")]
 public class GroupController(IGroupSevice groupSevice) : ControllerBase

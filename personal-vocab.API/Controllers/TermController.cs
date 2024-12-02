@@ -5,7 +5,7 @@ using personal_vocab.Interfeces;
 
 namespace personal_vocab.Controllers;
 
-//[Authorize]
+[Authorize]
 [ApiController]
 [Route("api/v1/term")]
 public class TermController(ITermService termSevice) : ControllerBase

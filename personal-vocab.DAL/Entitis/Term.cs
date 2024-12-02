@@ -9,6 +9,7 @@ public class Term
     public string Example { get; set; }
     public string Image { get; set; }
 
+    public virtual ICollection<DeckTerms> DeckTerms { get; set; }
     public virtual RepetitionData RepetitionData { get; set; }
 }
 

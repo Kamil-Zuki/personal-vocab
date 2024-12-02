@@ -8,14 +8,14 @@ namespace personal_vocab.Controllers;
 //[Authorize]
 [ApiController]
 [Route("api/v1/term")]
-public class TermController(ITermService TermSevice) : ControllerBase
+public class TermController(ITermService termSevice) : ControllerBase
 {
-    private readonly ITermService _TermSevice = TermSevice;
+    private readonly ITermService _termSevice = termSevice;
 
     [HttpPost]
     public async Task<ActionResult<TermDto>> CreateAsync(CreateTermDto model)
     {
-        var result = await _TermSevice.CreateAsync(model);
+        var result = await _termSevice.CreateAsync(model);
 
         return Ok(result);
     }
@@ -23,7 +23,7 @@ public class TermController(ITermService TermSevice) : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<TermDto>> GetByIdAsync(Guid id)
     {
-        var result = await _TermSevice.GetByIdAsync(id);
+        var result = await _termSevice.GetByIdAsync(id);
 
         return Ok(result);
     }
@@ -31,7 +31,15 @@ public class TermController(ITermService TermSevice) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TermDto>>> GetAllAsync()
     {
-        var result = await _TermSevice.GetAllAsync();
+        var result = await _termSevice.GetAllAsync();
+
+        return Ok(result);
+    }
+
+    [HttpGet("deck/{deckId}")]
+    public async Task<ActionResult<IEnumerable<TermDto>>> GetByDeckIdAsync(Guid deckId)
+    {
+        var result = await _termSevice.GetByDeckIdAsync(deckId);
 
         return Ok(result);
     }
@@ -39,7 +47,7 @@ public class TermController(ITermService TermSevice) : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<TermDto>> UpdateAsync(Guid id, CreateTermDto model)
     {
-        var result = await _TermSevice.UpdateAsync(id, model);
+        var result = await _termSevice.UpdateAsync(id, model);
 
         return Ok(result);
     }
@@ -47,7 +55,7 @@ public class TermController(ITermService TermSevice) : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<TermDto>> DeleteAsync(Guid id)
     {
-        var isDeleted = await _TermSevice.DeleteAsync(id);
+        var isDeleted = await _termSevice.DeleteAsync(id);
 
         if (!isDeleted)
         {

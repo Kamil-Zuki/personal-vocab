@@ -1,86 +1,59 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
-using personal_vocab.DTOs;
+﻿using Microsoft.AspNetCore.Mvc;
+using personal_vocab.DTOs.Requests;
+using personal_vocab.DTOs.Responses;
 using personal_vocab.Interfeces;
 
-namespace personal_vocab.Controllers
+namespace personal_vocab.Controllers;
+
+//[Authorize]
+[ApiController]
+[Route("api/v1/deck")]
+public class DeckController(IDeckService DeckSevice) : ControllerBase
 {
-    [Authorize]
-    [ApiController]
-    [Route("api/v1/deck")]
-    public class DeckController : ControllerBase
+    private readonly IDeckService _deckSevice = DeckSevice;
+
+    [HttpPost]
+    public async Task<ActionResult<DeckDto>> CreateAsync(CreateDeckDto model)
     {
-        private readonly IDeckService _deckService;
-        public DeckController(IDeckService deckService) 
+        var result = await _deckSevice.CreateAsync(model);
+
+        return Ok(result);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<DeckDto>> GetByIdAsync(Guid id)
+    {
+        var result = await _deckSevice.GetByIdAsync(id);
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<DeckDto>>> GetAllAsync()
+    {
+        var result = await _deckSevice.GetAllAsync();
+
+        return Ok(result);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<DeckDto>> UpdateAsync(Guid id, CreateDeckDto model)
+    {
+        var result = await _deckSevice.UpdateAsync(id, model);
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<DeckDto>> DeleteAsync(Guid id)
+    {
+        var isDeleted = await _deckSevice.DeleteAsync(id);
+
+        if (!isDeleted)
         {
-            _deckService = deckService;
+            return NotFound();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> CreateAsync(NoIdDeckDTO noIdDeck)
-        {
-            try
-            {
-                await _deckService.CreateAsync(noIdDeck);
-                return Ok();
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-        [HttpGet]
-        public async Task<ActionResult> GetAsync()
-        {
-            try
-            {
-                return Ok(await _deckService.GetAsync());
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetAsync(int id)
-        {
-            try
-            {
-                return Ok(await _deckService.GetAsync(id));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-        [HttpPatch("{id}")]
-        public async Task<ActionResult> PatchAsync(int id, [FromBody] JsonPatchDocument<DeckDTO> patchDoc)
-        {
-            try
-            {
-                await _deckService.PatchAsync(id,patchDoc);
-                
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-        [HttpDelete]
-        public async Task<ActionResult> DeleteAsync(int id)
-        {
-            try
-            {
-                await _deckService.DeleteAsync(id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
+        return NoContent();
     }
 }

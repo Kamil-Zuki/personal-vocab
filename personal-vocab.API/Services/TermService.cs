@@ -1,160 +1,125 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using personal_vocab.DAL.DataAccess;
 using personal_vocab.DAL.Entitis;
-using personal_vocab.DTOs;
+using personal_vocab.DTOs.Requests;
+using personal_vocab.DTOs.Responses;
 using personal_vocab.Interfeces;
 
-namespace personal_vocab.Services
+namespace personal_vocab.Services;
+
+public class TermService : ITermService
 {
-    public class TermService : ITermService
+    private readonly DataContext _dbContext;
+    private readonly IMapper _mapper;
+
+    public TermService(DataContext dbContext, IMapper mapper)
     {
-        private readonly DataContext _dataContext;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public TermService(DataContext dataContext, IHttpContextAccessor httpContextAccessor)
+        _dbContext = dbContext;
+        _mapper = mapper;
+    }
+
+    public async Task<TermDto> CreateAsync(CreateTermDto model)
+    {
+        var deck = await _dbContext.Decks.FindAsync(model.DeckId);
+        if (deck == null)
         {
-            _dataContext = dataContext;
-            _httpContextAccessor = httpContextAccessor;
+            throw new ArgumentException($"Deck with ID {model.DeckId} does not exist.");
         }
 
-        public async Task CreateAsync(NoIdTermDTO noIdTerm)
+        var term = _mapper.Map<Term>(model);
+        term.RepetitionData = new RepetitionData();
+
+        var deckTerm = new DeckTerms
         {
-            try
-            {
-                var deckTerm = new DeckTerms()
-                {
-                    DeckId = noIdTerm.DeckId,
-                    CreationDate = DateTime.UtcNow
-                };
-                await _dataContext.DeckTerms.AddAsync(deckTerm);
+            DeckId = model.DeckId,
+            Term = term
+        };
 
-                await _dataContext.Terms.AddAsync(new Term()
-                {
-                    Text = noIdTerm.Text,
-                    Transcription = noIdTerm.Transcription,
-                    Meaning = noIdTerm.Meaning,
-                    Example = noIdTerm.Example,
-                    Image = noIdTerm.Image,
+        _dbContext.DeckTerms.Add(deckTerm);
+        await _dbContext.SaveChangesAsync();
 
-                    DeckTerm = deckTerm
-                });
-                await _dataContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-        public async Task<List<TermDTO>> GetAsync()
+        var termDto = _mapper.Map<TermDto>(term);
+        termDto.DeckId = model.DeckId;
+
+        return termDto;
+    }
+
+    public async Task<IEnumerable<TermDto>> GetAllAsync()
+    {
+        var terms = await _dbContext.Terms.ToListAsync();
+        return _mapper.Map<IEnumerable<TermDto>>(terms);
+    }
+
+    public async Task<IEnumerable<TermDto>> GetByDeckIdAsync(Guid deckId)
+    {
+        var deck = await _dbContext.Decks.FindAsync(deckId);
+        if (deck == null)
         {
-            try
-            {
-                var termDTOs = await _dataContext.DeckTerms
-                .SelectMany(dt => dt.Terms.Select(t => new TermDTO
-                {
-                    Id = t.Id,
-                    Text = t.Text,
-                    Transcription = t.Transcription,
-                    Meaning = t.Meaning,
-                    Example = t.Example,
-                    Image = t.Image,
-                    DeckId = dt.DeckId
-                }))
-                .ToListAsync();
-
-                return termDTOs;
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            throw new ArgumentException($"Deck with ID {deckId} does not exist.");
         }
-        public async Task<TermDTO> GetAsync(int id)
+
+        var terms = await _dbContext.DeckTerms
+            .Where(dt => dt.DeckId == deckId)
+            .Include(dt => dt.Term)
+            .Select(dt => dt.Term)
+            .ToListAsync();
+
+        return _mapper.Map<IEnumerable<TermDto>>(terms);
+    }
+
+    public async Task<TermDto> GetByIdAsync(Guid id)
+    {
+        var term = await _dbContext.Terms.FindAsync(id);
+        return _mapper.Map<TermDto>(term);
+    }
+
+    public async Task<TermDto> UpdateAsync(Guid id, CreateTermDto model)
+    {
+        var existingTerm = await _dbContext.Terms
+            .Include(t => t.DeckTerms)
+            .FirstOrDefaultAsync(t => t.Id == id)
+            ?? throw new KeyNotFoundException("Term not found.");
+
+        var deck = await _dbContext.Decks.FindAsync(model.DeckId);
+        if (deck == null)
         {
-            try
-            {
-                return await _dataContext.Terms
-                    .Where(t => t.Id == id)
-                    .Select(t => new TermDTO
-                    {
-                        Id = t.Id,
-                        Text = t.Text,
-                        Transcription = t.Transcription,
-                        Meaning = t.Meaning,
-                        Example = t.Example,
-                        Image = t.Image,
-                        DeckId = t.DeckTerm.DeckId
-                    })
-                    .FirstOrDefaultAsync();
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            throw new ArgumentException($"Deck with ID {model.DeckId} does not exist.");
         }
-        public async Task UpdateAsync(int id, [FromBody] JsonPatchDocument<TermDTO> patchDoc)
+
+        _mapper.Map(model, existingTerm);
+
+        var existingDeckTerm = existingTerm.DeckTerms.FirstOrDefault(dt => dt.DeckId == model.DeckId);
+        if (existingDeckTerm == null)
         {
-            try
+            var newDeckTerm = new DeckTerms
             {
-                var existingDeckTerm = _dataContext.DeckTerms
-                    .Include(dt => dt.Terms)
-                    .FirstOrDefault(dt => dt.Terms.Any(t => t.Id == id));
-
-                if (existingDeckTerm == null)
-                    throw new Exception("The term hasn't been found in any Deck.");
-
-                var existingTerm = existingDeckTerm.Terms.FirstOrDefault(t => t.Id == id);
-
-                if (existingTerm == null)
-                    throw new Exception("The term hasn't been found.");
-
-                var termDTO = new TermDTO()
-                {
-                    Id = existingTerm.Id,
-                    Text = existingTerm.Text,
-                    Transcription = existingTerm.Transcription,
-                    Meaning = existingTerm.Meaning,
-                    Example = existingTerm.Example,
-                    Image = existingTerm.Image,
-                    DeckId = existingDeckTerm.DeckId
-                };
-
-                patchDoc.ApplyTo(termDTO);
-
-                existingTerm.Text = termDTO.Text;
-                existingTerm.Transcription = termDTO.Transcription;
-                existingTerm.Meaning = termDTO.Meaning;
-                existingTerm.Example = termDTO.Example;
-                existingTerm.Image = termDTO.Image;
-
-                await _dataContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+                DeckId = model.DeckId,
+                Term = existingTerm
+            };
+            _dbContext.DeckTerms.Add(newDeckTerm);
         }
-        public async Task DeleteAsync(int id)
+
+        await _dbContext.SaveChangesAsync();
+
+        return _mapper.Map<TermDto>(existingTerm);
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var term = await _dbContext.Terms
+            .Include(t => t.DeckTerms)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (term == null)
         {
-            try
-            {
-                var existingTerm = await _dataContext.Terms.Include(t => t.DeckTerm)
-                    .FirstOrDefaultAsync(t => t.Id == id);
-
-                if (existingTerm == null)
-                    throw new Exception("The term hasn't been found.");
-
-                _dataContext.DeckTerms.RemoveRange(existingTerm.DeckTerm);
-                _dataContext.Terms.Remove(existingTerm);
-                await _dataContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return false;
         }
+
+        _dbContext.DeckTerms.RemoveRange(term.DeckTerms);
+        _dbContext.Terms.Remove(term);
+
+        await _dbContext.SaveChangesAsync();
+        return true;
     }
 }

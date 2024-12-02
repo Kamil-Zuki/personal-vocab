@@ -1,6 +1,6 @@
-﻿namespace personal_vocab.DAL.Entitis;
+﻿namespace personal_vocab.DTOs.Responses;
 
-public class Term
+public class TermDto
 {
     public Guid Id { get; set; }
     public string Text { get; set; }
@@ -9,7 +9,5 @@ public class Term
     public string Example { get; set; }
     public string Image { get; set; }
 
-    public virtual ICollection<DeckTerms> DeckTerms { get; set; }
-    public virtual RepetitionData RepetitionData { get; set; }
+    public Guid DeckId { get; set; }
 }
-

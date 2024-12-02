@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
-using personal_vocab.DTOs;
+﻿using personal_vocab.DTOs.Requests;
+using personal_vocab.DTOs.Responses;
 
-namespace personal_vocab.Interfeces
+namespace personal_vocab.Interfeces;
+
+public interface IDeckService
 {
-    public interface IDeckService
-    {
-        Task CreateAsync(NoIdDeckDTO noIdDeck);
-        Task<List<DeckDTO>> GetAsync();
-        Task<DeckDTO> GetAsync(int id);
-        Task PatchAsync(int id, [FromBody] JsonPatchDocument<DeckDTO> patchDoc);
-        Task DeleteAsync(int id);
-
-    }
+    Task<DeckDto> CreateAsync(CreateDeckDto model);
+    Task<IEnumerable<DeckDto>> GetAllAsync();
+    Task<DeckDto> GetByIdAsync(Guid id);
+    Task<DeckDto> UpdateAsync(Guid id, CreateDeckDto model);
+    Task<bool> DeleteAsync(Guid id);
 }
+

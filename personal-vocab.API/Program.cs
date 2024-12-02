@@ -1,9 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using personal_vocab.BLL.Interfeces;
-using personal_vocab.BLL.Logic;
 using personal_vocab.DAL.DataAccess;
 using personal_vocab.Interfeces;
 using personal_vocab.Services;
@@ -17,16 +16,22 @@ public class Program()
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        #if RELEASE
+#if RELEASE
         builder.WebHost.UseUrls("http://*:80");
-        #endif
+#endif
         builder.Services.AddControllers().AddNewtonsoftJson();
-        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        builder.Services.AddScoped<IFlashCardService, FlashCardService>();
+        //builder.Services.AddScoped<IFlashCardService, FlashCardService>();
         builder.Services.AddScoped<IGroupSevice, GroupService>();
         builder.Services.AddScoped<IDeckService, DeckService>();
         builder.Services.AddScoped<ITermService, TermService>();
-        
+
+        builder.Services.AddSingleton(s => new MapperConfiguration(cfg =>
+        {
+            cfg.AddMaps(typeof(Program).Assembly);
+            cfg.AllowNullDestinationValues = false;
+            cfg.AllowNullCollections = false;
+        }).CreateMapper());
+
         var configuration = builder.Configuration;
 
         builder.Services.AddDbContext<DataContext>(options =>
@@ -47,7 +52,7 @@ public class Program()
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new OpenApiInfo { Title = "Dictionary Parser API", Version = "v1" });
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "Personal Vocabulary API", Version = "v1" });
             options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,

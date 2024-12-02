@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using personal_vocab.DAL.DataAccess;
 using personal_vocab.DAL.Entitis;
 using personal_vocab.DTOs.Requests;
@@ -19,6 +20,45 @@ public class GroupService(DataContext dbContext, IMapper mapper) : IGroupSevice
         await dbContext.SaveChangesAsync();
 
         return _mapper.Map<GroupDto>(group);
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var group = await _dbContext.Groups.FindAsync(id);
+        if (group == null)
+        {
+            return false;
+        }
+
+        _dbContext.Groups.Remove(group);
+        await _dbContext.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<IEnumerable<GroupDto>> GetAllAsync()
+    {
+        var groups = await _dbContext.Groups.ToListAsync();
+
+        return _mapper.Map<IEnumerable<GroupDto>>(groups);
+    }
+
+    public async Task<GroupDto> GetByIdAsync(Guid id)
+    {
+        var group = await _dbContext.Groups.FindAsync(id);
+
+        return _mapper.Map<GroupDto>(group);
+    }
+
+    public async Task<GroupDto> UpdateAsync(Guid id, CreateGroupDto model)
+    {
+        var existingGroup = await _dbContext.Groups.FindAsync(id)
+            ?? throw new KeyNotFoundException("Group not found.");
+
+        _mapper.Map(model, existingGroup);
+
+        await _dbContext.SaveChangesAsync();
+
+        return _mapper.Map<GroupDto>(existingGroup);
     }
 }
 

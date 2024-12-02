@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using personal_vocab.BLL.Interfeces;
+using personal_vocab.Interfeces;
 
 namespace personal_vocab.Controllers;
 
@@ -10,8 +10,5 @@ namespace personal_vocab.Controllers;
 public class RepetitionController : ControllerBase
 {
     private readonly IFlashCardService _superMemoAlgorithm;
-
-
-
 
 }

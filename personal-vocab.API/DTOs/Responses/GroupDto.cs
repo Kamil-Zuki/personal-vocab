@@ -2,9 +2,9 @@
 
 public record GroupDto
 (
-    Guid Id,
-    string Name,
-    int NewWordAmount,
-    int RepeatedWordAmount
+    Guid? Id,
+    string? Name,
+    int? NewWordAmount,
+    int? RepeatedWordAmount
 );
 

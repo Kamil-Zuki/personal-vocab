@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using personal_vocab.BLL.Interfeces;
-using personal_vocab.BLL.Logic;
 using personal_vocab.DAL.DataAccess;
 using personal_vocab.Interfeces;
 using personal_vocab.Services;
@@ -18,9 +16,9 @@ public class Program()
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        #if RELEASE
+#if RELEASE
         builder.WebHost.UseUrls("http://*:80");
-        #endif
+#endif
         builder.Services.AddControllers().AddNewtonsoftJson();
         //builder.Services.AddScoped<IFlashCardService, FlashCardService>();
         builder.Services.AddScoped<IGroupSevice, GroupService>();

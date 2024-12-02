@@ -1,8 +1,66 @@
-﻿namespace personal_vocab.Services;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using personal_vocab.DAL.DataAccess;
+using personal_vocab.DAL.Entitis;
+using personal_vocab.DTOs.Requests;
+using personal_vocab.DTOs.Responses;
+using personal_vocab.Interfeces;
 
-public class DeckService/* : IDeckService*/
+namespace personal_vocab.Services;
+
+public class DeckService(DataContext dbContext, IMapper mapper) : IDeckService
 {
+    private readonly DataContext _dbContext = dbContext;
+    private readonly IMapper _mapper = mapper;
+    public async Task<DeckDto> CreateAsync(CreateDeckDto model)
+    {
+        var deck = _mapper.Map<Deck>(model);
+        _dbContext.Decks.Add(deck);
 
+        await dbContext.SaveChangesAsync();
 
+        return _mapper.Map<DeckDto>(deck);
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var deck = await _dbContext.Decks.FindAsync(id);
+        if (deck == null)
+        {
+            return false;
+        }
+
+        _dbContext.Decks.Remove(deck);
+        await _dbContext.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<IEnumerable<DeckDto>> GetAllAsync()
+    {
+        var decks = await _dbContext.Decks.ToListAsync();
+
+        return _mapper.Map<IEnumerable<DeckDto>>(decks);
+    }
+
+    public async Task<DeckDto> GetByIdAsync(Guid id)
+    {
+        var deck = await _dbContext.Decks.FindAsync(id);
+
+        return _mapper.Map<DeckDto>(deck);
+    }
+
+    public async Task<DeckDto> UpdateAsync(Guid id, CreateDeckDto model)
+    {
+        var existingDeck = await _dbContext.Decks.FindAsync(id)
+            ?? throw new KeyNotFoundException("Deck not found.");
+
+        _mapper.Map(model, existingDeck);
+
+        await _dbContext.SaveChangesAsync();
+
+        return _mapper.Map<DeckDto>(existingDeck);
+    }
 }
+
+
 

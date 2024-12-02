@@ -10,4 +10,5 @@ public class RepetitionData
     public long RepetitionNumber { get; set; }
 
     public Guid TermId { get; set; }
+    public virtual Term Term { get; set; }
 }

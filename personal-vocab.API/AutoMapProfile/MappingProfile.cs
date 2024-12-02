@@ -11,5 +11,11 @@ public class MappingProfile : Profile
     {
         CreateMap<CreateGroupDto, Group>().ReverseMap();
         CreateMap<GroupDto, Group>().ReverseMap();
+
+        CreateMap<CreateDeckDto, Deck>().ReverseMap();
+        CreateMap<DeckDto, Deck>().ReverseMap();
+
+        CreateMap<CreateTermDto, Term>().ReverseMap();
+        CreateMap<TermDto, Term>().ReverseMap();
     }
 }

@@ -12,9 +12,10 @@ public class GroupService(DataContext dbContext, IMapper mapper) : IGroupSevice
 {
     private readonly DataContext _dbContext = dbContext;
     private readonly IMapper _mapper = mapper;
-    public async Task<GroupDto> CreateAsync(CreateGroupDto model)
+    public async Task<GroupDto> CreateAsync(Guid userId, CreateGroupDto model)
     {
         var group = _mapper.Map<Group>(model);
+        group.UserId = userId;
         _dbContext.Groups.Add(group);
 
         await dbContext.SaveChangesAsync();

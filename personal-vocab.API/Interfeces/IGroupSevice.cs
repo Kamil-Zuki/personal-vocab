@@ -5,7 +5,7 @@ namespace personal_vocab.Interfeces;
 
 public interface IGroupSevice
 {
-    Task<GroupDto> CreateAsync(CreateGroupDto model);
+    Task<GroupDto> CreateAsync(Guid userId, CreateGroupDto model);
     Task<IEnumerable<GroupDto>> GetAllAsync();
     Task<GroupDto> GetByIdAsync(Guid id);
     Task<GroupDto> UpdateAsync(Guid id, CreateGroupDto model);

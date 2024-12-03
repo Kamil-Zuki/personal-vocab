@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using personal_vocab.DTOs.Requests;
 using personal_vocab.DTOs.Responses;
 using personal_vocab.Interfeces;
+using System.Security.Claims;
 
 namespace personal_vocab.Controllers;
 
@@ -16,7 +17,9 @@ public class GroupController(IGroupSevice groupSevice) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<GroupDto>> CreateAsync(CreateGroupDto model)
     {
-        var result = await _groupSevice.CreateAsync(model);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+
+        var result = await _groupSevice.CreateAsync(userId, model);
 
         return Ok(result);
     }

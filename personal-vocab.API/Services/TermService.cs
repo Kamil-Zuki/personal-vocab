@@ -45,9 +45,10 @@ public class TermService : ITermService
         return termDto;
     }
 
-    public async Task<IEnumerable<TermDto>> GetAllAsync()
+    public async Task<IEnumerable<TermDto>> GetAllAsync(Guid userId)
     {
-        var terms = await _dbContext.Terms.ToListAsync();
+        var terms = await _dbContext.Terms
+            .Where(x => x.DeckTerms.Any(x => x.Deck.Group.UserId == userId)).ToListAsync();
         return _mapper.Map<IEnumerable<TermDto>>(terms);
     }
 

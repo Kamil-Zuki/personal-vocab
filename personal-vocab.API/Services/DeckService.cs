@@ -35,16 +35,18 @@ public class DeckService(DataContext dbContext, IMapper mapper) : IDeckService
         return true;
     }
 
-    public async Task<IEnumerable<DeckDto>> GetAllAsync()
+    public async Task<IEnumerable<DeckDto>> GetAllAsync(Guid userId)
     {
-        var decks = await _dbContext.Decks.ToListAsync();
+        var decks = await _dbContext.Decks
+            .Where(x => x.Group.UserId == userId).ToListAsync();
 
         return _mapper.Map<IEnumerable<DeckDto>>(decks);
     }
 
-    public async Task<DeckDto> GetByIdAsync(Guid id)
+    public async Task<DeckDto> GetByIdAsync(Guid id, Guid userId)
     {
-        var deck = await _dbContext.Decks.FindAsync(id);
+        var deck = await _dbContext.Decks
+            .FirstOrDefaultAsync(x => x.Group.UserId == userId && x.Id == id);
 
         return _mapper.Map<DeckDto>(deck);
     }

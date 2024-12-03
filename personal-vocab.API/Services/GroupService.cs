@@ -36,16 +36,18 @@ public class GroupService(DataContext dbContext, IMapper mapper) : IGroupSevice
         return true;
     }
 
-    public async Task<IEnumerable<GroupDto>> GetAllAsync()
+    public async Task<IEnumerable<GroupDto>> GetAllAsync(Guid userId)
     {
-        var groups = await _dbContext.Groups.ToListAsync();
+        var groups = await _dbContext.Groups
+            .Where(x => x.UserId == userId)
+            .ToListAsync();
 
         return _mapper.Map<IEnumerable<GroupDto>>(groups);
     }
 
-    public async Task<GroupDto> GetByIdAsync(Guid id)
+    public async Task<GroupDto> GetByIdAsync(Guid id, Guid userId)
     {
-        var group = await _dbContext.Groups.FindAsync(id);
+        var group = await _dbContext.Groups.FirstOrDefaultAsync(x => x.UserId == userId && x.Id == id);
 
         return _mapper.Map<GroupDto>(group);
     }

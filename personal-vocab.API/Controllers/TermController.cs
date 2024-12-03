@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using personal_vocab.DTOs.Requests;
 using personal_vocab.DTOs.Responses;
 using personal_vocab.Interfeces;
+using System.Security.Claims;
 
 namespace personal_vocab.Controllers;
 
@@ -32,7 +33,8 @@ public class TermController(ITermService termSevice) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TermDto>>> GetAllAsync()
     {
-        var result = await _termSevice.GetAllAsync();
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var result = await _termSevice.GetAllAsync(userId);
 
         return Ok(result);
     }

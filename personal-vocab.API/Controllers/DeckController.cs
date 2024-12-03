@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using personal_vocab.DTOs.Requests;
 using personal_vocab.DTOs.Responses;
 using personal_vocab.Interfeces;
+using System.Security.Claims;
 
 namespace personal_vocab.Controllers;
 
@@ -24,7 +25,8 @@ public class DeckController(IDeckService DeckSevice) : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<DeckDto>> GetByIdAsync(Guid id)
     {
-        var result = await _deckSevice.GetByIdAsync(id);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var result = await _deckSevice.GetByIdAsync(id, userId);
 
         return Ok(result);
     }
@@ -32,7 +34,8 @@ public class DeckController(IDeckService DeckSevice) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DeckDto>>> GetAllAsync()
     {
-        var result = await _deckSevice.GetAllAsync();
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var result = await _deckSevice.GetAllAsync(userId);
 
         return Ok(result);
     }

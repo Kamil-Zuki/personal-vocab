@@ -27,7 +27,8 @@ public class GroupController(IGroupSevice groupSevice) : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<GroupDto>> GetByIdAsync(Guid id)
     {
-        var result = await _groupSevice.GetByIdAsync(id);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var result = await _groupSevice.GetByIdAsync(id, userId);
 
         return Ok(result);
     }
@@ -35,7 +36,8 @@ public class GroupController(IGroupSevice groupSevice) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GroupDto>>> GetAllAsync()
     {
-        var result = await _groupSevice.GetAllAsync();
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var result = await _groupSevice.GetAllAsync(userId);
 
         return Ok(result);
     }
